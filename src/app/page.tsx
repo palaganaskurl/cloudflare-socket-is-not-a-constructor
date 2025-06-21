@@ -1,18 +1,17 @@
 import Image from "next/image";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
+import { getDb } from "@/lib/db";
 
 export default async function Home() {
-  // Make sure to install the 'postgres' package
+  try {
+    const db = getDb();
+    const result = await db.execute("select 1");
 
-  const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-  });
-  const db = drizzle({ client: pool });
+    console.log("result", result);
+  } catch (error) {
+    console.log("Error", error);
 
-  const result = await db.execute("select 1");
-
-  console.log("result", result);
+    return <>Error : {JSON.stringify(error)}</>;
+  }
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
